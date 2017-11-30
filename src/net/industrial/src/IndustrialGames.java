@@ -11,7 +11,7 @@ public class IndustrialGames extends GameState {
 
     @Override
     public void init(Game game) throws GrasslandException {
-        logo = new Sprite("res/logo.png");
+        logo = new Sprite("res/logo.png").scale(4f);
     }
 
     @Override
@@ -21,8 +21,9 @@ public class IndustrialGames extends GameState {
 
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
+        graphics.setBackgroundColour(0.8f, 0.8f, 0.8f);
         graphics.drawImage(logo, game.getWidth() / 2 - logo.getWidth() / 2,
-                game.getHeight() / 2 - game.getHeight() / 2);
+                game.getHeight() / 2 - logo.getHeight() / 2);
     }
 
     @Override
