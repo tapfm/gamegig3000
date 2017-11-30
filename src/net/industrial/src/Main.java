@@ -9,14 +9,12 @@ public class Main extends Game {
     }
 
     @Override
-    public void initStates() 
-            throws GrasslandException {
+    public void initStates() throws GrasslandException {
         addState(new IndustrialGames());
         enterState(0);
     }
 
-    public static void main(String args[]) 
-            throws GrasslandException {
+    public static void main(String args[]) throws GrasslandException {
         Game game = new Main();
         game.init();
     }

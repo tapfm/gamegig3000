@@ -1,3 +1,4 @@
 bin/
 .syntastic_javac_config
 build.sh
+.idea/
