@@ -4,6 +4,8 @@ import net.industrial.grassland.Game;
 import net.industrial.grassland.GrasslandException;
 
 public class Main extends Game {
+    public static final float BLOCK_SIZE = 0.05f;
+
     public Main() {
         super("Game Gig 3000", 800, 600, false);
     }
