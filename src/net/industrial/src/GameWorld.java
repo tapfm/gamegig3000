@@ -13,12 +13,9 @@ import net.industrial.src.objects.Tile;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.Iterator;
 import java.util.Random;
-=======
 import java.util.List;
->>>>>>> upstream/master
 
 public class GameWorld extends GameState {
     private Font font;
@@ -80,10 +77,6 @@ public class GameWorld extends GameState {
         addTile(new Tile(9,0,0,0,this));
         addTile(new Tile(0,0,9,0,this));
         addTile(new Tile(9,0,9,0,this));
-<<<<<<< HEAD
-=======
-        addTile(new Tile(9,1,9,0,this));
->>>>>>> upstream/master
     }
 
     public void genTiles() throws GrasslandException {
