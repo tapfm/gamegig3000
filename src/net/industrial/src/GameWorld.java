@@ -7,7 +7,6 @@ import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.resources.Font;
 import net.industrial.grassland.resources.SpriteSheet;
 import net.industrial.src.objects.Bat;
-import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
 import net.industrial.src.objects.Tile;
 import org.lwjgl.input.Keyboard;
@@ -65,8 +64,8 @@ public class GameWorld extends GameState {
     }
 
     public void addTile(Tile tile) {
-        tiles.add(tile);
         addObject(tile);
+        tiles.add(tile);
     }
 
     public void genBaseTiles() throws GrasslandException {
@@ -131,8 +130,12 @@ public class GameWorld extends GameState {
     @Override
     public void update(Game game, int delta) throws GrasslandException {
         camera.update(game, delta);
+<<<<<<< HEAD
         addObject(new BeaconSmoke(this, new Vector3f()));
         if (camera.getPosition().y > 0.1 + (heightLevel - 7) * 0.4) {
+=======
+        if (camera.getPosition().y > 0.1f + ((float) heightLevel - 3f) * 0.4f) {
+>>>>>>> upstream/master
             heightLevel++;
             backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 5));
             genTiles();
@@ -146,9 +149,13 @@ public class GameWorld extends GameState {
                 }
             }
         }
+<<<<<<< HEAD
         if (camera.getPosition().y + 0.8f > 0.1 + (heightLevel - 3) * 0.4) {
 
         }
+=======
+
+>>>>>>> upstream/master
         if (game.getInput().isKeyPressed(Keyboard.KEY_B))
             addObject(new Bat(this, new Vector3f(0.25f, 0.05f, 0f)));
     }
@@ -157,7 +164,7 @@ public class GameWorld extends GameState {
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.setBackgroundColour(1f, 1f, 1f);
         for (BackgroundTiles b : backgroundTilesList) b.render(graphics);
-        graphics.drawString(font, player.tileX() + " " + player.tileY() + " " + player.tileZ(), 20, 20);
+        graphics.drawString(font, Boolean.toString(player.willDie()).toUpperCase(), 20, 20);
     }
 
     public boolean locked() {
@@ -188,7 +195,7 @@ public class GameWorld extends GameState {
                     tile.isAt(x - 1, y, z + 1) ||
                     tile.isAt(x - 1, y, z) ||
                     tile.isAt(x - 1, y, z - 1)) {
-               returnList.add(tile);
+                returnList.add(tile);
             }
         }
         return returnList;
@@ -199,3 +206,4 @@ public class GameWorld extends GameState {
         return 1;
     }
 }
+
