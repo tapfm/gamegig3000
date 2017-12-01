@@ -11,15 +11,30 @@ import net.industrial.grassland.scene.Camera;
 import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
 
+import java.util.ArrayList;
+
 public class GameWorld extends GameState {
-    public static final Vector3f GRAVITY = new Vector3f(0, -0.000075f, 0);
-    public static SpriteSheet SMOKE;
-    public static Font FONT;
+    private Font font;
+    private ArrayList<BackgroundTiles> backgroundTilesList;
     private BackgroundTiles worldTiles;
     private Camera camera;
 
+    public static final Vector3f GRAVITY = new Vector3f(0, -0.000075f, 0);
+    public static SpriteSheet SMOKE;
+    public static Font FONT;
+
     @Override
     public void init(Game game) throws GrasslandException {
+
+        font = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
+
+        backgroundTilesList = new ArrayList<>();
+
+        backgroundTilesList.add(new BackgroundTiles(0, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
+        backgroundTilesList.add(new BackgroundTiles(1, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
+        backgroundTilesList.add(new BackgroundTiles(2, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
+
+
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
 
@@ -41,7 +56,11 @@ public class GameWorld extends GameState {
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.setBackgroundColour(1f, 1f, 1f);
-        //worldTiles.render(graphics);
+        graphics.drawString(font, "GAME HERE", 20, 20);
+        for(BackgroundTiles b : backgroundTilesList)
+            b.render(graphics);
+        //worldTiles.render(graphics,2);
+        // worldTiles.render(graphics);
         //graphics.fillQuad(new Vector3f(0f, 0f, 0.2f), new Vector3f(0, 0, 1f), new Vector3f(1f, 0f, 0f), 0.05f, 0.05f, new Sprite("res/tiles.png"));
     }
 
