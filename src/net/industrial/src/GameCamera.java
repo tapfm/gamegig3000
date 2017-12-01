@@ -68,11 +68,8 @@ public class GameCamera extends Camera{
                 thetaPrime = theta;
             } else
                 theta += turnRate * delta;
+            this.setPosition((float)Math.sin(theta),0f,(float)Math.cos(theta));
+            this.setAngle(theta,(float) Math.PI / 2);
         }
-
-
-
-        this.setPosition((float)Math.sin(theta),0f,(float)Math.cos(theta));
-        this.setAngle(theta,(float) Math.PI / 2);
     }
 }
