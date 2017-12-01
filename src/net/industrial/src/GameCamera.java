@@ -49,7 +49,11 @@ public class GameCamera extends Camera{
             theta = thetaPrime;
         }
 
-        this.setPosition((float)Math.sin(theta),0f,(float)Math.cos(theta));
+        float yVel = 0f;
+        if (game.getInput().isKeyDown(Keyboard.KEY_W))
+            yVel = 0.0005f * delta;
+
+        this.setPosition((float)Math.sin(theta),getPosition().y + yVel,(float)Math.cos(theta));
         this.setAngle(theta,(float) Math.PI / 2);
 
         if (game.getInput().isKeyPressed(Keyboard.KEY_E))

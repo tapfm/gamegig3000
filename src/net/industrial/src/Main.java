@@ -6,7 +6,7 @@ import net.industrial.grassland.graphics.Vector3f;
 
 public class Main extends Game {
     public static final float BLOCK_SIZE = 0.05f;
-    public static final Vector3f ORIGIN = new Vector3f(-5 * BLOCK_SIZE,-BLOCK_SIZE,-5 * BLOCK_SIZE);
+    public static final Vector3f ORIGIN = new Vector3f(-5 * BLOCK_SIZE,-4 * BLOCK_SIZE,-5 * BLOCK_SIZE);
 
     public Main() {
         super("Game Gig 3000", 1920, 1080, false);

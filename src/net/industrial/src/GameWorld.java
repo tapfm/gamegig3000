@@ -16,6 +16,8 @@ import net.industrial.src.objects.Tile;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class GameWorld extends GameState {
     private Font font;
@@ -50,6 +52,7 @@ public class GameWorld extends GameState {
 
         tiles = new ArrayList<>();
         genBaseTiles();
+        genTiles();
 
 
 
@@ -62,22 +65,49 @@ public class GameWorld extends GameState {
         addObject(player);
     }
 
+    public void addTile(Tile tile) {
+        tiles.add(tile);
+        addObject(tile);
+    }
+
     public void genBaseTiles() throws GrasslandException {
         for (int i = 0; i < 9; i++) {
-            tiles.add(new Tile(i,0,9,0,this));
-            tiles.add(new Tile(i,0,0,0,this));
-            tiles.add(new Tile(9,0, i,0,this));
-            tiles.add(new Tile(0,0, i,0,this));
+            addTile(new Tile(i,0,9,0,this));
+            addTile(new Tile(i,0,0,0,this));
+            addTile(new Tile(9,0, i,0,this));
+            addTile(new Tile(0,0, i,0,this));
         }
-        tiles.add(new Tile(0,0,0,0,this));
-        tiles.add(new Tile(9,0,0,0,this));
-        tiles.add(new Tile(0,0,9,0,this));
-        tiles.add(new Tile(9,0,9,0,this));
-        tiles.add(new Tile(9,1,9,0,this));
+        addTile(new Tile(0,0,0,0,this));
+        addTile(new Tile(9,0,0,0,this));
+        addTile(new Tile(0,0,9,0,this));
+        addTile(new Tile(9,0,9,0,this));
     }
 
     public void genTiles() throws GrasslandException {
-
+        Random r = new Random();
+        int side = heightLevel % 4;
+        for (int i = 1; i < 9; i++) {
+            for(int j = 1; j < 9; j++) {
+                if (r.nextFloat() > 0.75f) {
+                    if (side == 0)
+                        addTile((new Tile(i, j + (heightLevel - 4) * 8, 9, heightLevel, this)));
+                    if (side == 1)
+                        addTile((new Tile(9, j + (heightLevel - 4) * 8, i, heightLevel, this)));
+                    if (side == 2)
+                        addTile((new Tile(i, j + (heightLevel - 4) * 8, 0, heightLevel, this)));
+                    if (side == 3)
+                        addTile((new Tile(0, j + (heightLevel - 4) * 8, i, heightLevel, this)));
+                }
+            }
+        }
+        if (side == 0)
+            addTile(new Tile(9,(heightLevel - 3) * 8 + 1,9,heightLevel + 1, this));
+        if (side == 1)
+            addTile(new Tile(9,(heightLevel - 3) * 8 + 1,0,heightLevel + 1, this));
+        if (side == 2)
+            addTile(new Tile(0,(heightLevel - 3) * 8 + 1,0,heightLevel + 1, this));
+        if (side == 3)
+            addTile(new Tile(0,(heightLevel - 3) * 8 + 1,9,heightLevel + 1, this));
     }
 
     @Override
@@ -87,6 +117,16 @@ public class GameWorld extends GameState {
         if (camera.getPosition().y > 0.1 + (heightLevel - 3) * 0.4) {
             heightLevel++;
             backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 1));
+            genTiles();
+
+            Iterator<Tile> it = tiles.iterator();
+            while (it.hasNext()) {
+                Tile tile = it.next();
+                if (tile.getHeightLevel() < heightLevel - 3) {
+                    tile.kill();
+                    it.remove();
+                }
+            }
         }
         if (game.getInput().isKeyPressed(Keyboard.KEY_B))
             addObject(new Bat(this, new Vector3f(0.25f, 0.05f, 0f)));
