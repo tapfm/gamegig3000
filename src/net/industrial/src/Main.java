@@ -5,7 +5,7 @@ import net.industrial.grassland.GrasslandException;
 
 public class Main extends Game {
     public Main() {
-        super("Game Gig 3000", 800, 600, false);
+        super("Game Gig 3000", 1920, 1080, false);
     }
 
     @Override
