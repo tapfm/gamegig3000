@@ -49,9 +49,9 @@ public class GameWorld extends GameState {
         heightLevel = backgroundTilesList.size();
         tiles = new ArrayList<>();
         genBaseTiles();
-        genTiles();
-        heightLevel++;
-        genTiles();
+        //genTiles();
+        heightLevel--;
+        //genTiles();
 
 
 
