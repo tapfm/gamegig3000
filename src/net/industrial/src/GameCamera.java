@@ -8,17 +8,26 @@ import org.lwjgl.input.Keyboard;
 public class GameCamera extends Camera{
 
     private float theta;
+    private float y;
 
     private float turnRate;
+    private float upRate;
+
     private boolean turning;
+    private boolean goingUp;
 
     private float thetaPrime;
+    private float yPrime;
 
     private GameWorld world;
 
     public GameCamera(GameWorld world) {
         this.world = world;
         turnRate = 0.001f;
+        upRate = turnRate * 0.8f / (float)Math.PI;
+
+        y = 0;
+        yPrime = y;
 
         this.setPosition(new Vector3f(0f,0f,1f));
         this.setAngle(theta,(float) Math.PI / 2);
@@ -33,27 +42,36 @@ public class GameCamera extends Camera{
     }
 
     public void turn() {
-        if (!turning) turning = true;
+        if (!turning) {
+            turning = true;
+            goingUp = true;
+        }
     }
 
     public boolean isTurning() {
-        return turning;
+        return turning || goingUp;
     }
 
     @Override
     public void update(Game game, int delta) {
-        if (turning) theta += turnRate * delta;
+        if (turning) {
+            theta += turnRate * delta;
+        }
+        if (goingUp) {
+            y += upRate * delta;
+        }
         if (turning && theta > thetaPrime + (Math.PI /2f)) {
             turning = false;
             thetaPrime += (float) Math.PI / 2f;
             theta = thetaPrime;
         }
+        if (goingUp && y > yPrime + 0.4f) {
+            goingUp = false;
+            yPrime += 0.4f;
+            y = yPrime;
+        }
 
-        float yVel = 0f;
-        if (game.getInput().isKeyDown(Keyboard.KEY_W))
-            yVel = 0.0005f * delta;
-
-        this.setPosition((float)Math.sin(theta),getPosition().y + yVel,(float)Math.cos(theta));
+        this.setPosition((float)Math.sin(theta),y,(float)Math.cos(theta));
         this.setAngle(theta,(float) Math.PI / 2);
 
         if (game.getInput().isKeyPressed(Keyboard.KEY_E))

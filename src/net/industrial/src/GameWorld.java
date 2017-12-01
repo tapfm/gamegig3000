@@ -7,6 +7,7 @@ import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.resources.Font;
 import net.industrial.grassland.resources.SpriteSheet;
 import net.industrial.src.objects.Bat;
+import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
 import net.industrial.src.objects.Tile;
 import org.lwjgl.input.Keyboard;
@@ -46,10 +47,13 @@ public class GameWorld extends GameState {
         backgroundTilesList.add(new BackgroundTiles(3));
 
         heightLevel = backgroundTilesList.size();
-
         tiles = new ArrayList<>();
         genBaseTiles();
         genTiles();
+        heightLevel++;
+        genTiles();
+
+
 
         camera = new GameCamera(this);
         addCamera(camera);
@@ -78,20 +82,39 @@ public class GameWorld extends GameState {
         addTile(new Tile(9,0,9,0,this));
     }
 
+    public boolean getTileAt(int x, int y, int z){
+        boolean flag = false;
+        for (Tile t : tiles) {
+            if (t.getTileX() == x && t.getTileY() == y && t.getTileZ() == z) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
     public void genTiles() throws GrasslandException {
         Random r = new Random();
         int side = heightLevel % 4;
         for (int i = 1; i < 9; i++) {
             for(int j = 1; j < 9; j++) {
                 if (r.nextFloat() > 0.75f) {
-                    if (side == 0)
-                        addTile((new Tile(i, j + (heightLevel - 4) * 8, 9, heightLevel, this)));
-                    if (side == 1)
-                        addTile((new Tile(9, j + (heightLevel - 4) * 8, i, heightLevel, this)));
-                    if (side == 2)
-                        addTile((new Tile(i, j + (heightLevel - 4) * 8, 0, heightLevel, this)));
-                    if (side == 3)
-                        addTile((new Tile(0, j + (heightLevel - 4) * 8, i, heightLevel, this)));
+                    if (side == 0) {
+                        if(!(getTileAt(i, j + (heightLevel - 4) * 8 - 1, 9)))
+                            addTile((new Tile(i, j + (heightLevel - 4) * 8, 9, heightLevel, this)));
+                    }
+                    if (side == 1) {
+                        if(!(getTileAt(9, j + (heightLevel - 4) * 8 - 1, i)))
+                            addTile((new Tile(9, j + (heightLevel - 4) * 8, i, heightLevel, this)));
+                    }
+                    if (side == 2) {
+                        if(!(getTileAt(i, j + (heightLevel - 4) * 8 - 1, 0)))
+                            addTile((new Tile(i, j + (heightLevel - 4) * 8, 0, heightLevel, this)));
+                    }
+                    if (side == 3) {
+                        if(!(getTileAt(0, j + (heightLevel - 4) * 8 - 1, i)))
+                            addTile((new Tile(0, j + (heightLevel - 4) * 8, i, heightLevel, this)));
+                    }
                 }
             }
         }
@@ -108,21 +131,21 @@ public class GameWorld extends GameState {
     @Override
     public void update(Game game, int delta) throws GrasslandException {
         camera.update(game, delta);
-        if (camera.getPosition().y > 0.1f + ((float) heightLevel - 3f) * 0.4f) {
+        addObject(new BeaconSmoke(this, new Vector3f()));
+        if (camera.getPosition().y > 0.1 + (heightLevel - 7) * 0.4) {
             heightLevel++;
-            backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 1));
+            backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 5));
             genTiles();
 
             Iterator<Tile> it = tiles.iterator();
             while (it.hasNext()) {
                 Tile tile = it.next();
-                if (tile.getHeightLevel() < heightLevel - 3) {
+                if (tile.getHeightLevel() < heightLevel - 7) {
                     tile.kill();
                     it.remove();
                 }
             }
         }
-
         if (game.getInput().isKeyPressed(Keyboard.KEY_B))
             addObject(new Bat(this, new Vector3f(0.25f, 0.05f, 0f)));
     }
