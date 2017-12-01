@@ -18,7 +18,7 @@ public class Main extends Game {
         GameWorld gameWorld = new GameWorld();
         addState(gameWorld);
         gameWorld.init(this);
-        enterState(1);
+        enterState(0);
     }
 
     public static void main(String args[]) throws GrasslandException {

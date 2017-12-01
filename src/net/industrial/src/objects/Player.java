@@ -25,6 +25,7 @@ public class Player extends CollidableGameObject {
         playerSheet = new SpriteSheet("res/player.png", 24, 24);
         velocity = new Vector2f();
         this.world = world;
+        setSize(Main.BLOCK_SIZE, Main.BLOCK_SIZE, Main.BLOCK_SIZE);
 
         idleRight = new Animation(playerSheet, 0, 0, 5, 0, true, 12);
         idleLeft = new Animation(playerSheet, 0, 1, 5, 1, true, 12);

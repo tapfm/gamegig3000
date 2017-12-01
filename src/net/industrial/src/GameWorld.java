@@ -1,6 +1,7 @@
 package net.industrial.src;
 
 import net.industrial.grassland.Game;
+import net.industrial.grassland.GameObject;
 import net.industrial.grassland.GameState;
 import net.industrial.grassland.GrasslandException;
 import net.industrial.grassland.graphics.Graphics;
@@ -8,10 +9,13 @@ import net.industrial.grassland.graphics.Vector2f;
 import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.resources.Font;
 import net.industrial.grassland.resources.SpriteSheet;
-import net.industrial.grassland.scene.Camera;
+import net.industrial.src.objects.Bat;
 import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
+<<<<<<< HEAD
 import net.industrial.src.objects.Tile;
+=======
+>>>>>>> upstream/master
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -22,9 +26,10 @@ public class GameWorld extends GameState {
     private ArrayList<Tile> tiles;
     private int heightLevel;
     private GameCamera camera;
+    private Player player;
 
     public static final Vector2f GRAVITY = new Vector2f(0, -0.000075f);
-    public static SpriteSheet SMOKE, TILES;
+    public static SpriteSheet SMOKE, TILES, BAT, EXPLOSION;
     public static Font FONT;
 
     @Override
@@ -34,6 +39,8 @@ public class GameWorld extends GameState {
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
         TILES = new SpriteSheet("res/tiles.png", 16, 16);
+        BAT = new SpriteSheet("res/bat.png", 16, 16);
+        EXPLOSION = new SpriteSheet("res/explosion.png", 32, 32);
 
         backgroundTilesList = new ArrayList<>();
 
@@ -54,7 +61,8 @@ public class GameWorld extends GameState {
         activateCamera(camera);
         setLighting(false);
         setPerspective(false);
-        addObject(new Player(new Vector3f(0, 1f, 0), this));
+        player = new Player(new Vector3f(0, 1f, 0), this);
+        addObject(player);
     }
 
     public void genBaseTiles() throws GrasslandException {
@@ -83,6 +91,8 @@ public class GameWorld extends GameState {
             heightLevel++;
             backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 1));
         }
+        if (game.getInput().isKeyPressed(Keyboard.KEY_B))
+            addObject(new Bat(this, new Vector3f(0.25f, 0.05f, 0f)));
     }
 
     @Override
@@ -96,6 +106,10 @@ public class GameWorld extends GameState {
 
     public boolean locked() {
         return camera.isTurning();
+    }
+
+    public GameObject getPlayer() {
+        return player;
     }
 
     @Override
