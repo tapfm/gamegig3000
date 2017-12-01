@@ -8,9 +8,7 @@ import java.awt.*;
 import java.util.Random;
 
 public class BackgroundTiles {
-
     private int heightLevel;
-    private SpriteSheet spritesheet;
 
     private int[][] forward;
     private int[][] backward;
@@ -21,9 +19,8 @@ public class BackgroundTiles {
     private static int width = 8;
 
 
-    public BackgroundTiles(int heightLevel, SpriteSheet ss) {
+    public BackgroundTiles(int heightLevel) {
         this.heightLevel = heightLevel;
-        this.spritesheet = ss;
 
         if (this.heightLevel == 0) {
             forward = generateBase();
@@ -98,19 +95,19 @@ public class BackgroundTiles {
                 graphics.fillQuad(new Vector3f(0.2f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f + (float)col * 0.05f),
                         new Vector3f(1f,0f,0f),
                         new Vector3f(0f,0f,-1f),
-                        0.05f,0.05f, spritesheet.getSprite(forward[row][col],0));
+                        0.05f,0.05f, GameWorld.TILES.getSprite(forward[row][col],0));
                 graphics.fillQuad(new Vector3f(-0.2f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f + (float)col * 0.05f),
                         new Vector3f(-1f,0f,0f),
                         new Vector3f(0f,0f,1f),
-                        0.05f,0.05f, spritesheet.getSprite(backward[row][col],0));
+                        0.05f,0.05f, GameWorld.TILES.getSprite(backward[row][col],0));
                 graphics.fillQuad(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,0.2f),
                         new Vector3f(0f,0f,1f),
                         new Vector3f(1f,0f,0f),
-                        0.05f,0.05f, spritesheet.getSprite(right[row][col],0));
+                        0.05f,0.05f, GameWorld.TILES.getSprite(right[row][col],0));
                 graphics.fillQuad(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.2f),
                         new Vector3f(0f,0f,-1f),
                         new Vector3f(-1f,0f,0f),
-                        0.05f,0.05f, spritesheet.getSprite(left[row][col],0));
+                        0.05f,0.05f, GameWorld.TILES.getSprite(left[row][col],0));
             }
         }
 
@@ -123,22 +120,22 @@ public class BackgroundTiles {
                     graphics.fillCuboid(new Vector3f(0.175f, -0.175f + (float) row * 0.05f + (heightLevel - 1) * 8f * 0.05f, -0.175f + (float) col * 0.05f),
                         new Vector3f(1f, 0f, 0f),
                         new Vector3f(0f, 0f, -1f),
-                        0.05f, 0.05f, 0.05f,spritesheet.getSprite(forward[row][col], 0));
+                        0.05f, 0.05f, 0.05f,GameWorld.TILES.getSprite(forward[row][col], 0));
                 if (backward[row][col] != 3)
                     graphics.fillCuboid(new Vector3f(-0.175f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f + (float)col * 0.05f),
                         new Vector3f(-1f,0f,0f),
                         new Vector3f(0f,0f,1f),
-                        0.05f,0.05f, 0.05f,spritesheet.getSprite(backward[row][col],0));
+                        0.05f,0.05f, 0.05f,GameWorld.TILES.getSprite(backward[row][col],0));
                 if (right[row][col] != 3)
                     graphics.fillCuboid(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,0.175f),
                         new Vector3f(0f,0f,1f),
                         new Vector3f(1f,0f,0f),
-                        0.05f,0.05f, 0.05f,spritesheet.getSprite(right[row][col],0));
+                        0.05f,0.05f, 0.05f,GameWorld.TILES.getSprite(right[row][col],0));
                 if (left[row][col] != 3)
                     graphics.fillCuboid(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f),
                         new Vector3f(0f,0f,-1f),
                         new Vector3f(-1f,0f,0f),
-                        0.05f,0.05f, 0.05f,spritesheet.getSprite(left[row][col],0));
+                        0.05f,0.05f, 0.05f,GameWorld.TILES.getSprite(left[row][col],0));
             }
         }
     }

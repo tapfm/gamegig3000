@@ -20,7 +20,7 @@ public class GameWorld extends GameState {
     private Camera camera;
 
     public static final Vector3f GRAVITY = new Vector3f(0, -0.000075f, 0);
-    public static SpriteSheet SMOKE;
+    public static SpriteSheet SMOKE, TILES;
     public static Font FONT;
 
     @Override
@@ -28,17 +28,15 @@ public class GameWorld extends GameState {
 
         font = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
 
-        backgroundTilesList = new ArrayList<>();
-
-        backgroundTilesList.add(new BackgroundTiles(0, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
-        backgroundTilesList.add(new BackgroundTiles(1, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
-        backgroundTilesList.add(new BackgroundTiles(2, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
-
-
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
+        TILES = new SpriteSheet("res/tiles.png", 16, 16);
 
-        worldTiles = new BackgroundTiles(0, (new SpriteSheet("res/tiles.png",16,16)).scale(2f));
+        backgroundTilesList = new ArrayList<>();
+        backgroundTilesList.add(new BackgroundTiles(0));
+        backgroundTilesList.add(new BackgroundTiles(1));
+        backgroundTilesList.add(new BackgroundTiles(2));
+
         camera = new GameCamera();
         addCamera(camera);
         activateCamera(camera);
