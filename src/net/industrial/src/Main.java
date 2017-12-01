@@ -11,8 +11,10 @@ public class Main extends Game {
     @Override
     public void initStates() throws GrasslandException {
         addState(new IndustrialGames());
-        addState(new GameWorld());
-        enterState(0);
+        GameWorld gameWorld = new GameWorld();
+        addState(gameWorld);
+        gameWorld.init(this);
+        enterState(1);
     }
 
     public static void main(String args[]) throws GrasslandException {
