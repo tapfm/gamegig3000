@@ -32,21 +32,16 @@ public class GameWorld extends GameState {
 
         backgroundTilesList = new ArrayList<>();
 
-        backgroundTilesList.add(new BackgroundTiles(0, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
-        backgroundTilesList.add(new BackgroundTiles(1, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
-        backgroundTilesList.add(new BackgroundTiles(2, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
-        backgroundTilesList.add(new BackgroundTiles(3, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
+        backgroundTilesList.add(new BackgroundTiles(0));
+        backgroundTilesList.add(new BackgroundTiles(1));
+        backgroundTilesList.add(new BackgroundTiles(2));
+        backgroundTilesList.add(new BackgroundTiles(3));
 
         heightLevel = backgroundTilesList.size();
 
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
         TILES = new SpriteSheet("res/tiles.png", 16, 16);
-
-        backgroundTilesList = new ArrayList<>();
-        backgroundTilesList.add(new BackgroundTiles(0));
-        backgroundTilesList.add(new BackgroundTiles(1));
-        backgroundTilesList.add(new BackgroundTiles(2));
 
         camera = new GameCamera();
         addCamera(camera);
@@ -62,7 +57,7 @@ public class GameWorld extends GameState {
         addObject(new BeaconSmoke(this, new Vector3f()));
         if (camera.getPosition().y > 0.1 + (heightLevel - 3) * 0.4) {
             heightLevel++;
-            backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 1, (new SpriteSheet("res/tiles.png", 16, 16)).scale(2f)));
+            backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 1));
         }
     }
 
