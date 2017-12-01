@@ -4,6 +4,7 @@ import net.industrial.grassland.Game;
 import net.industrial.grassland.GameState;
 import net.industrial.grassland.GrasslandException;
 import net.industrial.grassland.graphics.Graphics;
+import net.industrial.grassland.graphics.Vector2f;
 import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.resources.Font;
 import net.industrial.grassland.resources.SpriteSheet;
@@ -17,9 +18,9 @@ public class GameWorld extends GameState {
     private Font font;
     private ArrayList<BackgroundTiles> backgroundTilesList;
     private BackgroundTiles worldTiles;
-    private Camera camera;
+    private GameCamera camera;
 
-    public static final Vector3f GRAVITY = new Vector3f(0, -0.000075f, 0);
+    public static final Vector2f GRAVITY = new Vector2f(0, -0.000075f);
     public static SpriteSheet SMOKE, TILES;
     public static Font FONT;
 
@@ -37,7 +38,7 @@ public class GameWorld extends GameState {
         backgroundTilesList.add(new BackgroundTiles(1));
         backgroundTilesList.add(new BackgroundTiles(2));
 
-        camera = new GameCamera();
+        camera = new GameCamera(this);
         addCamera(camera);
         activateCamera(camera);
         setLighting(false);
@@ -54,12 +55,15 @@ public class GameWorld extends GameState {
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.setBackgroundColour(1f, 1f, 1f);
-        graphics.drawString(font, "GAME HERE", 20, 20);
         for(BackgroundTiles b : backgroundTilesList)
             b.render(graphics);
         //worldTiles.render(graphics,2);
         // worldTiles.render(graphics);
         //graphics.fillQuad(new Vector3f(0f, 0f, 0.2f), new Vector3f(0, 0, 1f), new Vector3f(1f, 0f, 0f), 0.05f, 0.05f, new Sprite("res/tiles.png"));
+    }
+
+    public boolean locked() {
+        return camera.isTurning();
     }
 
     @Override

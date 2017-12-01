@@ -2,9 +2,7 @@ package net.industrial.src;
 
 import net.industrial.grassland.graphics.Graphics;
 import net.industrial.grassland.graphics.Vector3f;
-import net.industrial.grassland.resources.SpriteSheet;
 
-import java.awt.*;
 import java.util.Random;
 
 public class BackgroundTiles {

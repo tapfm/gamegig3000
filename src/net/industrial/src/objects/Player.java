@@ -4,6 +4,7 @@ import net.industrial.grassland.CollidableGameObject;
 import net.industrial.grassland.Game;
 import net.industrial.grassland.GrasslandException;
 import net.industrial.grassland.graphics.Graphics;
+import net.industrial.grassland.graphics.Vector2f;
 import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.resources.Animation;
 import net.industrial.grassland.resources.SpriteSheet;
@@ -13,7 +14,7 @@ import org.lwjgl.input.Keyboard;
 
 public class Player extends CollidableGameObject {
     private SpriteSheet playerSheet;
-    private Vector3f velocity;
+    private Vector2f velocity;
     private GameWorld world;
     private Animation idleLeft, idleRight, runLeft, runRight, currentAnimation;
     private boolean right = true, moving;
@@ -22,7 +23,7 @@ public class Player extends CollidableGameObject {
             throws GrasslandException {
         setPosition(position);
         playerSheet = new SpriteSheet("res/player.png", 24, 24);
-        velocity = new Vector3f();
+        velocity = new Vector2f();
         this.world = world;
 
         idleRight = new Animation(playerSheet, 0, 0, 5, 0, true, 12);
@@ -54,26 +55,29 @@ public class Player extends CollidableGameObject {
     @Override
     public void update(Game game, int delta) throws GrasslandException {
         updateAnimations(delta);
-        if (game.getInput().isKeyPressed(Keyboard.KEY_SPACE))
-            velocity = velocity.add(new Vector3f(0, 0.004f, 0));
-        Vector3f acceleration = GameWorld.GRAVITY.add(new Vector3f(
-                velocity.x * - 0.015f * delta,
-                velocity.y * -0.005f * delta, 0f));
+        Vector3f axis = world.getCamera().axisVector();
 
-        if (game.getInput().isKeyDown(Keyboard.KEY_D)) {
-            acceleration = acceleration.add(new Vector3f(0.000075f, 0, 0));
+        if (game.getInput().isKeyPressed(Keyboard.KEY_SPACE))
+            velocity = velocity.add(new Vector2f(0, 0.004f));
+        Vector2f acceleration = GameWorld.GRAVITY.add(new Vector2f(
+                velocity.x * - 0.015f * delta,
+                velocity.y * -0.005f * delta));
+
+        if (game.getInput().isKeyDown(Keyboard.KEY_D) && !world.locked()) {
+            acceleration = acceleration.add(new Vector2f(0.000075f, 0));
             right = true;
             moving = true;
-        } else if (game.getInput().isKeyDown(Keyboard.KEY_A)) {
-            acceleration = acceleration.add(new Vector3f(-0.000075f, 0, 0));
+        } else if (game.getInput().isKeyDown(Keyboard.KEY_A) && !world.locked()) {
+            acceleration = acceleration.add(new Vector2f(-0.000075f, 0));
             right = false;
             moving = true;
         } else moving = false;
 
         velocity = velocity.add(acceleration);
-        setPosition(getPosition().add(velocity.scale(delta)));
+        Vector3f worldVelocity = new Vector3f(0, velocity.y, 0).add(axis.scale(velocity.x));
+        setPosition(getPosition().add(worldVelocity.scale(delta)));
         if (getPosition().y < 0)
-            setPosition(new Vector3f(getPosition().x, 0, getPosition().y));
+            setPosition(new Vector3f(getPosition().x, 0, getPosition().z));
     }
 
     @Override

@@ -7,7 +7,7 @@ public class Main extends Game {
     public static final float BLOCK_SIZE = 0.05f;
 
     public Main() {
-        super("Game Gig 3000", 1920, 1080, true);
+        super("Game Gig 3000", 800, 600, true);
     }
 
     @Override
