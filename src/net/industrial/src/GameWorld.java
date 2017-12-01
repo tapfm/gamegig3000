@@ -12,10 +12,7 @@ import net.industrial.grassland.resources.SpriteSheet;
 import net.industrial.src.objects.Bat;
 import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
-<<<<<<< HEAD
 import net.industrial.src.objects.Tile;
-=======
->>>>>>> upstream/master
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
