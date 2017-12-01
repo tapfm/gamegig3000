@@ -40,7 +40,7 @@ public class BeaconSmoke extends GameObject {
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.fillQuad(getPosition().add(world.getCamera().lookVector()
-                .scale(-0.5f)),
+                .scale(0.1f)),
                 world.getCamera().lookVector(),
                 world.getCamera().axisVector(),
                 Main.BLOCK_SIZE,

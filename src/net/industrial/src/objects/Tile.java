@@ -31,9 +31,12 @@ public class Tile extends CollidableGameObject {
         tileY = y;
         tileZ = z;
 
-        if (((x == 0 && z == 0) || (x == 0 && z == 9) || (x == 9 && z == 0) || (x == 9 && z == 9)) && y != 0)
-            sprite = GameWorld.TILES.getSprite(2, 0);
         setPosition((new Vector3f(tileX, tileY, tileZ)).scale(Main.BLOCK_SIZE).add(Main.ORIGIN));
+
+        if (((x == 0 && z == 0) || (x == 0 && z == 9) || (x == 9 && z == 0) || (x == 9 && z == 9)) && y != 0) {
+            sprite = GameWorld.TILES.getSprite(2, 0);
+            world.addObject(new Beacon(world, getPosition().add(new Vector3f(0f, Main.BLOCK_SIZE, 0f))));
+        }
 
         heightLevel = h;
     }

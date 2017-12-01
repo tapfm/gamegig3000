@@ -32,7 +32,10 @@ public class Bat extends CollidableGameObject {
         if (diff.dot(world.getCamera().axisVector()) < 0) currentAnimation = batRight;
         else currentAnimation = batLeft;
 
-        if (collidingWith((CollidableGameObject) world.getPlayer())) kill();
+        if (collidingWith((CollidableGameObject) world.getPlayer())) {
+            kill();
+            world.decrementScore();
+        }
 
         batLeft.update(delta);
         batRight.update(delta);
@@ -40,7 +43,7 @@ public class Bat extends CollidableGameObject {
 
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
-        graphics.fillQuad(getPosition(),
+        graphics.fillQuad(getPosition().add(world.getCamera().lookVector().scale(0.1f)),
                 world.getCamera().lookVector(),
                 world.getCamera().axisVector(),
                 Main.BLOCK_SIZE, Main.BLOCK_SIZE, currentAnimation.currentFrame());

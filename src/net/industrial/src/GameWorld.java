@@ -10,7 +10,6 @@ import net.industrial.src.objects.Bat;
 import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
 import net.industrial.src.objects.Tile;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,22 +17,25 @@ import java.util.Random;
 import java.util.List;
 
 public class GameWorld extends GameState {
-    private Font font;
     private ArrayList<BackgroundTiles> backgroundTilesList;
     private ArrayList<Tile> tiles;
     private int heightLevel;
     private GameCamera camera;
     private Player player;
+    private int score = 0;
+    private List<Bat> bats = new ArrayList<>();
 
-    public static final Vector2f GRAVITY = new Vector2f(0, -0.000065f);
+    public static final Vector2f GRAVITY = new Vector2f(0, -0.000060f);
     public static SpriteSheet SMOKE, TILES, BAT, EXPLOSION;
-    public static Font FONT;
+    public static Font FONT, FONT_LARGE;
+
+    private boolean init = false;
 
     @Override
     public void init(Game game) throws GrasslandException {
 
-        font = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
+        FONT_LARGE = new Font(new SpriteSheet("res/font.png", 10, 11).scale(12f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
         TILES = new SpriteSheet("res/tiles.png", 16, 16);
         BAT = new SpriteSheet("res/bat.png", 16, 16);
@@ -49,19 +51,22 @@ public class GameWorld extends GameState {
         heightLevel = backgroundTilesList.size();
         tiles = new ArrayList<>();
         genBaseTiles();
+<<<<<<< HEAD
         //genTiles();
         heightLevel--;
         //genTiles();
 
 
+=======
+        heightLevel--;
+>>>>>>> upstream/master
 
         camera = new GameCamera(this);
         addCamera(camera);
         activateCamera(camera);
         setLighting(false);
         setPerspective(false);
-        player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 0f)), this);
-        addObject(player);
+
     }
 
     public void addTile(Tile tile) {
@@ -130,6 +135,11 @@ public class GameWorld extends GameState {
 
     @Override
     public void update(Game game, int delta) throws GrasslandException {
+        if (!init) {
+            player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 9f * Main.BLOCK_SIZE)), this);
+            addObject(player);
+            init = true;
+        }
         camera.update(game, delta);
         addObject(new BeaconSmoke(this, new Vector3f()));
         if (camera.getPosition().y > 0.1 + (heightLevel - 7) * 0.4) {
@@ -146,15 +156,20 @@ public class GameWorld extends GameState {
                 }
             }
         }
-        if (game.getInput().isKeyPressed(Keyboard.KEY_B))
-            addObject(new Bat(this, new Vector3f(0.25f, 0.05f, 0f)));
+
+        if (player.getY() < camera.getPosition().y - Main.BLOCK_SIZE * 30) {
+            game.addState(new ScoreState(score));
+            game.enterState(2);
+        }
     }
 
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.setBackgroundColour(1f, 1f, 1f);
         for (BackgroundTiles b : backgroundTilesList) b.render(graphics);
-        graphics.drawString(font, Boolean.toString(player.willDie()).toUpperCase(), 20, 20);
+        String scoreString = Integer.toString(score);
+        if (scoreString.length() == 1) scoreString = "0" + scoreString;
+        graphics.drawString(FONT_LARGE, scoreString, 20, 20);
     }
 
     public boolean locked() {
@@ -191,9 +206,30 @@ public class GameWorld extends GameState {
         return returnList;
     }
 
+    public void incrementScore() {
+        score++;
+    }
+
     @Override
     public int getId() {
         return 1;
+    }
+
+    public void addBat(Bat bat) {
+        bats.add(bat);
+        addObject(bat);
+    }
+
+    public void resetBats() {
+        for (Bat bat : bats) {
+            if (!bat.willDie()) bat.kill();
+        }
+        bats = new ArrayList<>();
+    }
+
+    public void decrementScore() {
+        score--;
+        if (score < 0) score = 0;
     }
 }
 
