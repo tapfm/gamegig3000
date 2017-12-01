@@ -17,22 +17,22 @@ import java.util.Random;
 import java.util.List;
 
 public class GameWorld extends GameState {
-    private Font font;
     private ArrayList<BackgroundTiles> backgroundTilesList;
     private ArrayList<Tile> tiles;
     private int heightLevel;
     private GameCamera camera;
     private Player player;
+    private int score = 0;
 
     public static final Vector2f GRAVITY = new Vector2f(0, -0.000065f);
     public static SpriteSheet SMOKE, TILES, BAT, EXPLOSION;
-    public static Font FONT;
+    public static Font FONT, FONT_LARGE;
 
     @Override
     public void init(Game game) throws GrasslandException {
 
-        font = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
+        FONT_LARGE = new Font(new SpriteSheet("res/font.png", 10, 11).scale(12f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
         TILES = new SpriteSheet("res/tiles.png", 16, 16);
         BAT = new SpriteSheet("res/bat.png", 16, 16);
@@ -56,7 +56,7 @@ public class GameWorld extends GameState {
         activateCamera(camera);
         setLighting(false);
         setPerspective(false);
-        player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 0f)), this);
+        player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 9f * Main.BLOCK_SIZE)), this);
         addObject(player);
     }
 
@@ -131,7 +131,9 @@ public class GameWorld extends GameState {
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.setBackgroundColour(1f, 1f, 1f);
         for (BackgroundTiles b : backgroundTilesList) b.render(graphics);
-        graphics.drawString(font, Boolean.toString(player.willDie()).toUpperCase(), 20, 20);
+        String scoreString = Integer.toString(score);
+        if (scoreString.length() == 1) scoreString = "0" + scoreString;
+        graphics.drawString(FONT_LARGE, scoreString, 20, 20);
     }
 
     public boolean locked() {
@@ -166,6 +168,10 @@ public class GameWorld extends GameState {
             }
         }
         return returnList;
+    }
+
+    public void incrementScore() {
+        score++;
     }
 
     @Override
