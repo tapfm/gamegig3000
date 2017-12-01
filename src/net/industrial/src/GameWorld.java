@@ -10,12 +10,14 @@ import net.industrial.grassland.resources.SpriteSheet;
 import net.industrial.grassland.scene.Camera;
 import net.industrial.src.objects.BeaconSmoke;
 import net.industrial.src.objects.Player;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 
 public class GameWorld extends GameState {
     private Font font;
     private ArrayList<BackgroundTiles> backgroundTilesList;
+    private int heightLevel;
     private BackgroundTiles worldTiles;
     private Camera camera;
 
@@ -33,7 +35,9 @@ public class GameWorld extends GameState {
         backgroundTilesList.add(new BackgroundTiles(0, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
         backgroundTilesList.add(new BackgroundTiles(1, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
         backgroundTilesList.add(new BackgroundTiles(2, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
+        backgroundTilesList.add(new BackgroundTiles(3, (new SpriteSheet("res/tiles.png",16,16)).scale(2f)));
 
+        heightLevel = backgroundTilesList.size();
 
         FONT = new Font(new SpriteSheet("res/font.png", 10, 11).scale(2f));
         SMOKE = new SpriteSheet("res/smoke.png", 16, 16);
@@ -51,6 +55,10 @@ public class GameWorld extends GameState {
     public void update(Game game, int delta) throws GrasslandException {
         camera.update(game, delta);
         addObject(new BeaconSmoke(this, new Vector3f()));
+        if (camera.getPosition().y > 0.1 + (heightLevel - 3) * 0.4) {
+            heightLevel++;
+            backgroundTilesList.set((heightLevel - 1) % 4,new BackgroundTiles(heightLevel - 1, (new SpriteSheet("res/tiles.png", 16, 16)).scale(2f)));
+        }
     }
 
     @Override

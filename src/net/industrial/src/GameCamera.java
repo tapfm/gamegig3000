@@ -5,8 +5,6 @@ import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.scene.Camera;
 import org.lwjgl.input.Keyboard;
 
-import java.security.Key;
-
 public class GameCamera extends Camera{
 
     private float theta;
@@ -54,6 +52,8 @@ public class GameCamera extends Camera{
             turnRight();
         if (game.getInput().isKeyPressed(Keyboard.KEY_Q))
             turnLeft();
+        if (game.getInput().isKeyDown(Keyboard.KEY_W))
+            this.setPosition(this.getPosition().add(new Vector3f(0f,delta * 0.0001f,0f)));
 
         if (turning) {
             if (theta + turnRate * delta >= thetaPrime + (Math.PI /2) && turnRate > 0) {
@@ -68,7 +68,7 @@ public class GameCamera extends Camera{
                 thetaPrime = theta;
             } else
                 theta += turnRate * delta;
-            this.setPosition((float)Math.sin(theta),0f,(float)Math.cos(theta));
+            this.setPosition((float)Math.sin(theta),this.getY(),(float)Math.cos(theta));
             this.setAngle(theta,(float) Math.PI / 2);
         }
     }
