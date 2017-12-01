@@ -22,7 +22,7 @@ public class Explosion extends GameObject {
 
     @Override
     public void update(Game game, int delta) throws GrasslandException {
-        world.getCamera().screenShake(0.01f);
+        world.getCamera().screenShake(0.03f);
         explosion.update(delta);
         if (!explosion.isPlaying()) kill();
     }
