@@ -27,7 +27,7 @@ public class Player extends CollidableGameObject {
         playerSheet = new SpriteSheet("res/player.png", 24, 24);
         velocity = new Vector2f();
         this.world = world;
-        setSize(Main.BLOCK_SIZE, Main.BLOCK_SIZE, Main.BLOCK_SIZE);
+        setSize(2f * Main.BLOCK_SIZE / 3f, Main.BLOCK_SIZE, 2f * Main.BLOCK_SIZE / 3f);
 
         idleRight = new Animation(playerSheet, 0, 0, 5, 0, true, 12);
         idleLeft = new Animation(playerSheet, 0, 1, 5, 1, true, 12);
@@ -82,28 +82,28 @@ public class Player extends CollidableGameObject {
 
         List<Tile> below = world.tilesAround(tileX(), tileY() - 1, tileZ());
         for (Tile tile : below) {
-            if (collidingWith(tile))
+            if (collidingWith(tile) && velocity.y < 0)
                 setPosition(new Vector3f(getX(), tile.getY() + Main.BLOCK_SIZE, getZ()));
         }
 
         Tile left = world.tileAt(tileX() - 1, tileY(), tileZ());
         if (left != null && collidingWith(left)) {
-            setPosition(new Vector3f(left.getX() + Main.BLOCK_SIZE, getY(), getZ()));
+            setPosition(new Vector3f(left.getX() + 5f * Main.BLOCK_SIZE / 6f, getY(), getZ()));
             velocity.x = 0f;
         }
         Tile right = world.tileAt(tileX() + 1, tileY(), tileZ());
         if (right != null && collidingWith(right)) {
-            setPosition(new Vector3f(right.getX() - Main.BLOCK_SIZE, getY(), getZ()));
+            setPosition(new Vector3f(right.getX() - 5f * Main.BLOCK_SIZE / 6f, getY(), getZ()));
             velocity.x = 0f;
         }
         Tile front = world.tileAt(tileX(), tileY(), tileZ() + 1);
         if (front != null && collidingWith(front)) {
-            setPosition(new Vector3f(getX(), getY(), front.getZ() - Main.BLOCK_SIZE));
+            setPosition(new Vector3f(getX(), getY(), front.getZ() - 5f * Main.BLOCK_SIZE / 6f));
             velocity.x = 0f;
         }
         Tile back = world.tileAt(tileX(), tileY(), tileZ() - 1);
         if (back != null && collidingWith(back)) {
-            setPosition(new Vector3f(getX(), getY(), back.getZ() + Main.BLOCK_SIZE));
+            setPosition(new Vector3f(getX(), getY(), back.getZ() + 5f * Main.BLOCK_SIZE / 6f));
             velocity.x = 0f;
         }
     }
@@ -116,7 +116,8 @@ public class Player extends CollidableGameObject {
                 Main.BLOCK_SIZE * 1.5f,
                 Main.BLOCK_SIZE * 1.5f,
                 currentAnimation.currentFrame());
-        graphics.drawCuboid(Main.ORIGIN.add((new Vector3f(tileX(), tileY(), tileZ()).scale(Main.BLOCK_SIZE))), Main.BLOCK_SIZE, Main.BLOCK_SIZE, Main.BLOCK_SIZE);
+        for (Tile tile : world.tilesAround(tileX(), tileY() - 1, tileZ())) graphics.drawCuboid(tile.getPosition(), Main.BLOCK_SIZE, Main.BLOCK_SIZE, Main.BLOCK_SIZE);
+        renderDebug(game, graphics);
     }
 
     public int tileX() {
@@ -124,7 +125,7 @@ public class Player extends CollidableGameObject {
     }
 
     public int tileY() {
-        return (int) Math.ceil(getPosition().sub(Main.ORIGIN).y / Main.BLOCK_SIZE);
+        return (int) Math.round(getPosition().sub(Main.ORIGIN).y / Main.BLOCK_SIZE);
     }
 
     public int tileZ() {
