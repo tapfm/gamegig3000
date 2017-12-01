@@ -25,6 +25,7 @@ public class Tile extends CollidableGameObject {
     public Tile(int x, int y, int z, int h, GameWorld world) throws GrasslandException {
         this.world = world;
         sprite = GameWorld.TILES.getSprite(3, 0);
+        setSize(Main.BLOCK_SIZE, Main.BLOCK_SIZE, Main.BLOCK_SIZE);
 
         tileX = x;
         tileY = y;
@@ -61,5 +62,7 @@ public class Tile extends CollidableGameObject {
 
     }
 
-
+    public boolean isAt(int x, int y, int z) {
+        return (x == tileX && y == tileY && z == tileZ);
+    }
 }

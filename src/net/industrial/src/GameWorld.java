@@ -1,9 +1,6 @@
 package net.industrial.src;
 
-import net.industrial.grassland.Game;
-import net.industrial.grassland.GameObject;
-import net.industrial.grassland.GameState;
-import net.industrial.grassland.GrasslandException;
+import net.industrial.grassland.*;
 import net.industrial.grassland.graphics.Graphics;
 import net.industrial.grassland.graphics.Vector2f;
 import net.industrial.grassland.graphics.Vector3f;
@@ -16,6 +13,7 @@ import net.industrial.src.objects.Tile;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameWorld extends GameState {
     private Font font;
@@ -25,7 +23,7 @@ public class GameWorld extends GameState {
     private GameCamera camera;
     private Player player;
 
-    public static final Vector2f GRAVITY = new Vector2f(0, -0.000075f);
+    public static final Vector2f GRAVITY = new Vector2f(0, -0.000065f);
     public static SpriteSheet SMOKE, TILES, BAT, EXPLOSION;
     public static Font FONT;
 
@@ -51,29 +49,32 @@ public class GameWorld extends GameState {
         tiles = new ArrayList<>();
         genBaseTiles();
 
-
-
         camera = new GameCamera(this);
         addCamera(camera);
         activateCamera(camera);
         setLighting(false);
         setPerspective(false);
-        player = new Player(new Vector3f(0, 1f, 0), this);
+        player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 0f)), this);
         addObject(player);
+    }
+
+    public void addTile(Tile tile) {
+        tiles.add(tile);
+        addObject(tile);
     }
 
     public void genBaseTiles() throws GrasslandException {
         for (int i = 0; i < 9; i++) {
-            tiles.add(new Tile(i,0,9,0,this));
-            tiles.add(new Tile(i,0,0,0,this));
-            tiles.add(new Tile(9,0, i,0,this));
-            tiles.add(new Tile(0,0, i,0,this));
+            addTile(new Tile(i,0,9,0,this));
+            addTile(new Tile(i,0,0,0,this));
+            addTile(new Tile(9,0, i,0,this));
+            addTile(new Tile(0,0, i,0,this));
         }
-        tiles.add(new Tile(0,0,0,0,this));
-        tiles.add(new Tile(9,0,0,0,this));
-        tiles.add(new Tile(0,0,9,0,this));
-        tiles.add(new Tile(9,0,9,0,this));
-        tiles.add(new Tile(9,1,9,0,this));
+        addTile(new Tile(0,0,0,0,this));
+        addTile(new Tile(9,0,0,0,this));
+        addTile(new Tile(0,0,9,0,this));
+        addTile(new Tile(9,0,9,0,this));
+        addTile(new Tile(9,1,9,0,this));
     }
 
     public void genTiles() throws GrasslandException {
@@ -95,10 +96,8 @@ public class GameWorld extends GameState {
     @Override
     public void render(Game game, Graphics graphics) throws GrasslandException {
         graphics.setBackgroundColour(1f, 1f, 1f);
-        for(BackgroundTiles b : backgroundTilesList)
-            b.render(graphics);
-        for(Tile t : tiles)
-            t.render(game,graphics);
+        for (BackgroundTiles b : backgroundTilesList) b.render(graphics);
+        graphics.drawString(font, player.tileX() + " " + player.tileY() + " " + player.tileZ(), 20, 20);
     }
 
     public boolean locked() {
@@ -107,6 +106,32 @@ public class GameWorld extends GameState {
 
     public GameObject getPlayer() {
         return player;
+    }
+
+    public Tile tileAt(int x, int y, int z) {
+        for (Tile tile : tiles) {
+            if (tile.isAt(x, y, z)) return tile;
+        }
+
+        return null;
+    }
+
+    public List<Tile> tilesAround(int x, int y, int z) {
+        List<Tile> returnList = new ArrayList<Tile>();
+        for (Tile tile : tiles) {
+            if (tile.isAt(x, y, z) ||
+                    tile.isAt(x + 1, y, z) ||
+                    tile.isAt(x + 1, y, z + 1) ||
+                    tile.isAt(x + 1, y, z - 1) ||
+                    tile.isAt(x, y, z + 1) ||
+                    tile.isAt(x, y, z - 1) ||
+                    tile.isAt(x - 1, y, z + 1) ||
+                    tile.isAt(x - 1, y, z) ||
+                    tile.isAt(x - 1, y, z - 1)) {
+               returnList.add(tile);
+            }
+        }
+        return returnList;
     }
 
     @Override

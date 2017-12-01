@@ -9,7 +9,7 @@ public class Main extends Game {
     public static final Vector3f ORIGIN = new Vector3f(-5 * BLOCK_SIZE,-BLOCK_SIZE,-5 * BLOCK_SIZE);
 
     public Main() {
-        super("Game Gig 3000", 1920, 1080, false);
+        super("Game Gig 3000", 800, 600, true);
     }
 
     @Override
