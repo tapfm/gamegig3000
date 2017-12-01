@@ -20,6 +20,7 @@ public class Player extends CollidableGameObject {
     private GameWorld world;
     private Animation idleLeft, idleRight, runLeft, runRight, currentAnimation;
     private boolean right = true, moving;
+    private int jumpCount = 0;
 
     public Player(Vector3f position, GameWorld world)
             throws GrasslandException {
@@ -60,8 +61,11 @@ public class Player extends CollidableGameObject {
         updateAnimations(delta);
         Vector3f axis = world.getCamera().axisVector();
 
-        if (game.getInput().isKeyPressed(Keyboard.KEY_SPACE))
-            velocity = velocity.add(new Vector2f(0, 0.003f));
+        if (game.getInput().isKeyPressed(Keyboard.KEY_SPACE) && jumpCount < 2) {
+            velocity = velocity.add(new Vector2f(0, 0.0025f));
+            jumpCount++;
+        }
+
         Vector2f acceleration = GameWorld.GRAVITY.add(new Vector2f(
                 velocity.x * - 0.015f * delta,
                 velocity.y * -0.01f * delta));
@@ -82,8 +86,10 @@ public class Player extends CollidableGameObject {
 
         List<Tile> below = world.tilesAround(tileX(), tileY() - 1, tileZ());
         for (Tile tile : below) {
-            if (collidingWith(tile) && velocity.y < 0)
+            if (collidingWith(tile) && velocity.y < -0.0001f) {
                 setPosition(new Vector3f(getX(), tile.getY() + Main.BLOCK_SIZE, getZ()));
+                jumpCount = 0;
+            }
         }
 
         Tile left = world.tileAt(tileX() - 1, tileY(), tileZ());
@@ -116,8 +122,6 @@ public class Player extends CollidableGameObject {
                 Main.BLOCK_SIZE * 1.5f,
                 Main.BLOCK_SIZE * 1.5f,
                 currentAnimation.currentFrame());
-        for (Tile tile : world.tilesAround(tileX(), tileY() - 1, tileZ())) graphics.drawCuboid(tile.getPosition(), Main.BLOCK_SIZE, Main.BLOCK_SIZE, Main.BLOCK_SIZE);
-        renderDebug(game, graphics);
     }
 
     public int tileX() {
@@ -130,5 +134,9 @@ public class Player extends CollidableGameObject {
 
     public int tileZ() {
         return (int) Math.round(getPosition().sub(Main.ORIGIN).z / Main.BLOCK_SIZE);
+    }
+
+    public void setVelocity(Vector2f velocity) {
+        this.velocity = velocity;
     }
 }
