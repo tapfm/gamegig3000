@@ -5,8 +5,6 @@ import net.industrial.grassland.graphics.Vector3f;
 import net.industrial.grassland.scene.Camera;
 import org.lwjgl.input.Keyboard;
 
-import java.security.Key;
-
 public class GameCamera extends Camera{
 
     private float theta;
