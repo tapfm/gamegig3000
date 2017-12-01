@@ -8,139 +8,68 @@ import java.awt.*;
 import java.util.Random;
 
 public class BackgroundTiles {
-
     private int heightLevel;
-    private SpriteSheet spritesheet;
 
-    private int[][] forward;
-    private int[][] backward;
-    private int[][] right;
-    private int[][] left;
+    private int[][][] tiles;
+    private static int size = 8;
 
-    private static int height = 8;
-    private static int width = 8;
-
-
-    public BackgroundTiles(int heightLevel, SpriteSheet ss) {
+    public BackgroundTiles(int heightLevel) {
         this.heightLevel = heightLevel;
-        this.spritesheet = ss;
-
-        if (this.heightLevel == 0) {
-            forward = generateBase();
-            backward = generateBase();
-            right = generateBase();
-            left = generateBase();
-        }
-        else {
-            forward = generateLevel();
-            backward = generateLevel();
-            right = generateLevel();
-            left = generateLevel();
-        }
+        tiles = new int[size][size][size];
+        if (this.heightLevel == 0) generateBase();
+        else generateLevel();
     }
 
-    public int[][] generateLevel() {
+    public void generateLevel() {
         Random r = new Random();
-        int[][] section = new int[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                section[i][j] = r.nextInt(2);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                for (int k = 0; k < size; k++) {
+                    tiles[i][j][k] = 0;
+                    if (r.nextInt(10) == 0) tiles[i][j][k] = 1;
+                }
             }
         }
-        return section;
     }
 
-    public boolean cellAboveAlive(int row, int col, int[][] section) {
-        if (row == 7)
-            return  true;
-        else if (section[row + 1][col] != 3)
-            return true;
-        else
-            return false;
-    }
-
-    public int[][] generateBase() {
+    public void generateBase() {
         Random r = new Random();
-        int[][] baseSection = new int[height][width];
+        tiles[0][size - 1][0] = -1;
+        tiles[size - 1][size - 1][0] = -1;
+        tiles[size - 1][size - 1][size - 1] = -1;
+        tiles[0][size - 1][size - 1] = -1;
 
-        for(int i = height - 1; i > 0; i--) {
-            for(int j = 0; j < width; j++) {
-                if (cellAboveAlive(i,j,baseSection) && r.nextFloat() > baseProb(j))
-                    baseSection[i][j] = r.nextInt(2);
-                else
-                    baseSection[i][j] = 3;
+        int layer = 0;
+        for (int j = size - 2; j >= 0; j--) {
+            for (int i = 0; i < size; i++) {
+                for (int k = 0; k < size; k++) {
+                    if (k >= layer / 2 && i >= layer / 2 &&
+                            k <= size - layer / 2 && i <= size - layer / 2) {
+                        if (tiles[i][j + 1][k] == -1) tiles[i][j][k] = -1;
+                        else if (r.nextInt(4) == 0) tiles[i][j][k] = -1;
+                    } else tiles[i][j][k] = -1;
+                }
             }
+            layer++;
         }
-
-        return baseSection;
-    }
-
-    public static float baseProb(int col) {
-        int newCol;
-        if (col < 4)
-            newCol = col;
-        else
-            newCol = 7 - col;
-        return (float) Math.pow(0.5,(double)newCol);
     }
 
     public void render(Graphics graphics) {
-
-        if (heightLevel == 0){
-            renderBase(graphics);
-            return;
-        }
-
-        graphics.fillCuboid(new Vector3f(0f,0f,0f), new Vector3f(1f,0f,0f), new Vector3f(0f,1f,0f),8f * 0.05f, 6f * 0.05f, 6f * 0.05f, spritesheet.getSprite(3,0));
-
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                graphics.fillQuad(new Vector3f(0.2f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f + (float)col * 0.05f),
-                        new Vector3f(1f,0f,0f),
-                        new Vector3f(0f,0f,-1f),
-                        0.05f,0.05f, spritesheet.getSprite(forward[row][col],0));
-                graphics.fillQuad(new Vector3f(-0.2f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f + (float)col * 0.05f),
-                        new Vector3f(-1f,0f,0f),
-                        new Vector3f(0f,0f,1f),
-                        0.05f,0.05f, spritesheet.getSprite(backward[row][col],0));
-                graphics.fillQuad(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,0.2f),
-                        new Vector3f(0f,0f,1f),
-                        new Vector3f(1f,0f,0f),
-                        0.05f,0.05f, spritesheet.getSprite(right[row][col],0));
-                graphics.fillQuad(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.2f),
-                        new Vector3f(0f,0f,-1f),
-                        new Vector3f(-1f,0f,0f),
-                        0.05f,0.05f, spritesheet.getSprite(left[row][col],0));
-            }
-        }
-
-    }
-
-    public void renderBase(Graphics graphics) {
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                if (forward[row][col] != 3)
-                    graphics.fillCuboid(new Vector3f(0.175f, -0.175f + (float) row * 0.05f + (heightLevel - 1) * 8f * 0.05f, -0.175f + (float) col * 0.05f),
-                        new Vector3f(1f, 0f, 0f),
-                        new Vector3f(0f, 0f, -1f),
-                        0.05f, 0.05f, 0.05f,spritesheet.getSprite(forward[row][col], 0));
-                if (backward[row][col] != 3)
-                    graphics.fillCuboid(new Vector3f(-0.175f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f + (float)col * 0.05f),
-                        new Vector3f(-1f,0f,0f),
-                        new Vector3f(0f,0f,1f),
-                        0.05f,0.05f, 0.05f,spritesheet.getSprite(backward[row][col],0));
-                if (right[row][col] != 3)
-                    graphics.fillCuboid(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,0.175f),
-                        new Vector3f(0f,0f,1f),
-                        new Vector3f(1f,0f,0f),
-                        0.05f,0.05f, 0.05f,spritesheet.getSprite(right[row][col],0));
-                if (left[row][col] != 3)
-                    graphics.fillCuboid(new Vector3f(-0.175f + (float)col * 0.05f,-0.175f + (float)row * 0.05f + (heightLevel - 1) * 8f * 0.05f,-0.175f),
-                        new Vector3f(0f,0f,-1f),
-                        new Vector3f(-1f,0f,0f),
-                        0.05f,0.05f, 0.05f,spritesheet.getSprite(left[row][col],0));
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                for (int k = 0; k < size; k++) {
+                    if (tiles[i][j][k] != -1) graphics.fillCuboid(new Vector3f(
+                                    (- (float) size / 2f + i) * Main.BLOCK_SIZE,
+                                    (- (float) size / 2f + j) * Main.BLOCK_SIZE + (heightLevel - 1) * 8f * 0.05f,
+                                    (- (float) size / 2f + k) * Main.BLOCK_SIZE),
+                            new Vector3f(1f, 0f, 0f),
+                            new Vector3f(0f, 0f, -1f),
+                            Main.BLOCK_SIZE,
+                            Main.BLOCK_SIZE,
+                            Main.BLOCK_SIZE,
+                            GameWorld.TILES.getSprite(tiles[i][j][k], 0));
+                }
             }
         }
     }
-
 }
