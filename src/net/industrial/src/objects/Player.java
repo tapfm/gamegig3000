@@ -112,6 +112,7 @@ public class Player extends CollidableGameObject {
             setPosition(new Vector3f(getX(), getY(), back.getZ() + 5f * Main.BLOCK_SIZE / 6f));
             velocity.x = 0f;
         }
+
     }
 
     @Override

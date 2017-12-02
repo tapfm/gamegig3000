@@ -17,7 +17,6 @@ public class Main extends Game {
         addState(new IndustrialGames());
         GameWorld gameWorld = new GameWorld();
         addState(gameWorld);
-        gameWorld.init(this);
         enterState(0);
     }
 
