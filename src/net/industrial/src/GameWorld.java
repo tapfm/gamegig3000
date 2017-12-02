@@ -29,8 +29,6 @@ public class GameWorld extends GameState {
     public static SpriteSheet SMOKE, TILES, BAT, EXPLOSION;
     public static Font FONT, FONT_LARGE;
 
-    private boolean init = false;
-
     @Override
     public void init(Game game) throws GrasslandException {
 
@@ -64,6 +62,8 @@ public class GameWorld extends GameState {
         setLighting(false);
         setPerspective(false);
 
+        player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 9f * Main.BLOCK_SIZE)), this);
+        addObject(player);
     }
 
     public void addTile(Tile tile) {
@@ -132,11 +132,6 @@ public class GameWorld extends GameState {
 
     @Override
     public void update(Game game, int delta) throws GrasslandException {
-        if (!init) {
-            player = new Player(Main.ORIGIN.add(new Vector3f(0f, 0.2f, 9f * Main.BLOCK_SIZE)), this);
-            addObject(player);
-            init = true;
-        }
         camera.update(game, delta);
         addObject(new BeaconSmoke(this, new Vector3f()));
         if (camera.getPosition().y > 0.1 + (heightLevel - 7) * 0.4) {
@@ -147,7 +142,7 @@ public class GameWorld extends GameState {
             Iterator<Tile> it = tiles.iterator();
             while (it.hasNext()) {
                 Tile tile = it.next();
-                if (tile.getHeightLevel() < heightLevel - 7) {
+                if (tile.getHeightLevel() < heightLevel - 7 && tile.getY() > 1) {
                     tile.kill();
                     it.remove();
                 }
