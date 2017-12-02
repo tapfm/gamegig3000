@@ -51,15 +51,12 @@ public class GameWorld extends GameState {
         heightLevel = backgroundTilesList.size();
         tiles = new ArrayList<>();
         genBaseTiles();
-<<<<<<< HEAD
         //genTiles();
         heightLevel--;
         //genTiles();
 
 
-=======
         heightLevel--;
->>>>>>> upstream/master
 
         camera = new GameCamera(this);
         addCamera(camera);
